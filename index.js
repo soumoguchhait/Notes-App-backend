@@ -4,11 +4,13 @@ const bodyParser=require("body-parser");
 const mongoose=require("mongoose");
 const app=express();
 const notesRouter=require("./Routes/notesRouter")
+const userRoutes=require(`./Routes/userRoutes`)
 app.use(bodyParser.json({ extended: true, limit: "5mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "5mb" }));
 app.use(express.json({ extended: true, limit: "5mb" }));
 app.use(cors());
 app.use('/notes',notesRouter);
+app.use('/user',userRoutes);
 const Port=5000;
 const DB_URL="mongodb+srv://soumya:Guchhait8587@soumyadb.wdru3eu.mongodb.net/?retryWrites=true&w=majority&appName=soumyadb";
 mongoose
