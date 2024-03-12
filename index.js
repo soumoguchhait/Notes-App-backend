@@ -6,12 +6,14 @@ require("dotenv").config();
 const app=express();
 const notesRouter=require("./Routes/notesRouter")
 const userRoutes=require(`./Routes/userRoutes`)
+
 app.use(bodyParser.json({ extended: true, limit: "5mb" }));
-app.use(bodyParser.urlencoded({ extended: true, limit: "5mb" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "5mb" }));
 app.use(express.json({ extended: true, limit: "5mb" }));
 app.use(cors());
 app.use('/notes',notesRouter);
 app.use('/user',userRoutes);
+app.use('/uploads', express.static('uploads'));
 const Port=process.env.PORT;
 
 const DB_URL=process.env.DB_Url;

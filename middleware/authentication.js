@@ -10,7 +10,7 @@ const checkAuth=(req,res,next)=>{
     }
     catch{
         return res.status(403).json({
-            message:"unauthorized"
+            message:"unauthorized by me"
         });
     }
 };

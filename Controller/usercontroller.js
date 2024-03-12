@@ -7,15 +7,18 @@ const SECRET_KEY= process.env.Secret_key;
 
 const createUser = async (req, res) => {
   const user = req.body;
+  const file = req.file;
+
   let newUser = new userModel(user);
+
   try {
     const emailExist = await userModel.findOne({
       email: user.email,
     });
+
     if (emailExist) {
       return res.status(400).json({
         message: "Email already exist",
-        
       });
     }
 
@@ -23,16 +26,30 @@ const createUser = async (req, res) => {
     const hashPassword = await bcrypt.hash(user.password, salt);
     newUser.password = hashPassword;
 
+    if (file) {
+      // newUser.image = file.path;
+      // console.log(newUser, "this is the newUser object");
+      newUser.image = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+      // localStorage.setItem('imageUrl', newUser.image);
+    }
+
     await newUser.save();
+
     return res.status(201).json({
       message: "User Created successfully",
       result: newUser,
     });
+  
   } catch (err) {
+    if (file) {
+      console.log(err, "this is the error");
+    }
+
     res.status(500).json({
       message: err.message,
     });
   }
+  console.log(newUser)
 };
 const getUsers = async (req, res) => {
   try {
@@ -112,7 +129,7 @@ const userLogin = async (req, res) => {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return res.status(401).json({
-          message: "Invalid credentials",
+          message: "Invalid credential",
         });
       }
   
@@ -122,12 +139,9 @@ const userLogin = async (req, res) => {
       });
   
       return res.status(200).json({
-        message: "Login successfully",
+        message: "Login successfullyy",
         token,
-        user: {
-          email: user.email,
-          name: user.fname,
-        },
+        user:user
       });
     } catch (err) {
       console.error(err);
